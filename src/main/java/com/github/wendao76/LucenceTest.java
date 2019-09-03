@@ -25,7 +25,6 @@ public class LucenceTest {
      * @Title: 写入数据
      * @methodName: testCreate
      * @Description:
-     * @author: 王延飞
      */
     @Test
     public void testCreate() throws IOException {
@@ -60,7 +59,6 @@ public class LucenceTest {
      * @Title: 查询数据
      * @methodName: testSearch
      * @Description:
-     * @author: 王延飞
      * @date: 2018-08-05 16:01
      */
     @Test
@@ -104,7 +102,6 @@ public class LucenceTest {
      * @Title: 删除数据
      * @methodName: testDelete
      * @Description:
-     * @author: 王延飞
      * @date: 2018-08-05 16:01
      */
     @Test
@@ -140,7 +137,6 @@ public class LucenceTest {
      * @Title: 更新数据
      * @methodName: testUpdate
      * @Description: lucene的update比较特殊，update的代价太高，先删除，然后在插入
-     * @author: 王延飞
      */
     @Test
     public void testUpdate() throws IOException, ParseException {
@@ -171,7 +167,6 @@ public class LucenceTest {
      * @Title: 查询多个字段
      * @methodName: testMultiField
      * @Description:
-     * @author: 王延飞
      */
     @Test
     public void testMultiField() throws IOException, ParseException {
