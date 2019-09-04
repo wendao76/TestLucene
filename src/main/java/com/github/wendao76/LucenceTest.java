@@ -4,11 +4,9 @@ import com.github.wendao76.model.Article;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.LongPoint;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -30,10 +28,10 @@ public class LucenceTest {
     public void testCreate() throws IOException {
 
         Article article = new Article();
-        article.setId(108L);
-        article.setAuthor("FLY");
-        article.setTitle("学习大数据");
-        article.setContent("学数据，像毕老师一样牛！");
+        article.setId(111L);
+        article.setAuthor("WD");
+        article.setTitle("今天天气不错");
+        article.setContent("今天是个好日子， 应该要去吃肯德基了吧");
         article.setUrl("https://blog.csdn.net/fly910905/article/details/81190382");
 
         // String indexPath = "E:\\LuceneIndex";
@@ -42,6 +40,7 @@ public class LucenceTest {
         //创建一个标准分词器，一个字分一次
 //        Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = new IKAnalyzer(true);
+
         //写入索引的配置，设置了分词器
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         //指定了写入数据目录和配置
