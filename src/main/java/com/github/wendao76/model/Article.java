@@ -40,8 +40,10 @@ public class Article {
         //向文档中添加一个long类型的属性，建立索引
         doc.add(new LongPoint("id", id));
         //在文档中存储
+        doc.add(new StoredField("id", id));
         doc.add(new SortedDocValuesField("id", new BytesRef(id.toString())));
         //设置一个文本类型，会对内容进行分词，建立索引，并将内容在文档中存储
+
         doc.add(new TextField("title", title, Field.Store.YES));
         //设置一个文本类型，会对内容进行分词，建立索引，存在文档中存储 / No代表不存储
         doc.add(new TextField("content", content, Field.Store.YES));
