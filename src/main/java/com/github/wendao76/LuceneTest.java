@@ -20,12 +20,12 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class LucenceTest {
+public class LuceneTest {
     /**
      * @Title: 写入数据
      * @methodName: testCreate
      * @Description:
-     * @author: 王延飞
+     * @author:
      */
     @Test
     public void testCreate() throws IOException {
@@ -37,8 +37,8 @@ public class LucenceTest {
         article.setContent("学数据，像毕老师一样牛！");
         article.setUrl("https://blog.csdn.net/fly910905/article/details/81190382");
 
-        // String indexPath = "E:\\LuceneIndex";
-        String indexPath = "E:\\LuceneIndex";
+        // String indexPath = "D:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         FSDirectory fsDirectory = FSDirectory.open(Paths.get(indexPath));
         //创建一个标准分词器，一个字分一次
 //        Analyzer analyzer = new StandardAnalyzer();
@@ -67,7 +67,7 @@ public class LucenceTest {
     public void testSearch() throws IOException, ParseException {
 
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         //Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = new IKAnalyzer(true);
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
@@ -111,7 +111,7 @@ public class LucenceTest {
     public void testDelete() throws IOException, ParseException {
 
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         Analyzer analyzer = new IKAnalyzer(true);
         FSDirectory fsDirectory = FSDirectory.open(Paths.get(indexPath));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
@@ -146,7 +146,7 @@ public class LucenceTest {
     public void testUpdate() throws IOException, ParseException {
 
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         StandardAnalyzer analyzer = new StandardAnalyzer();
         FSDirectory fsDirectory = FSDirectory.open(Paths.get(indexPath));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
@@ -177,7 +177,7 @@ public class LucenceTest {
     public void testMultiField() throws IOException, ParseException {
 
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         Analyzer analyzer = new IKAnalyzer(true);
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
@@ -210,7 +210,7 @@ public class LucenceTest {
     public void testMatchAll() throws IOException, ParseException {
 
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
@@ -237,7 +237,7 @@ public class LucenceTest {
     @Test
     public void testBooleanQuery() throws Exception {
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
@@ -270,7 +270,7 @@ public class LucenceTest {
     @Test
     public void testQueryParser() throws Exception {
 
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
@@ -302,7 +302,7 @@ public class LucenceTest {
      */
     @Test
     public void testRangeQuery() throws Exception {
-        String indexPath = "E:\\LuceneIndex";
+        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
