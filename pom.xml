@@ -43,6 +43,12 @@
             <artifactId>lucene-highlighter</artifactId>
             <version>8.0.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jianggujin/IKAnalyzer-lucene -->
+        <dependency>
+            <groupId>com.jianggujin</groupId>
+            <artifactId>IKAnalyzer-lucene</artifactId>
+            <version>8.0.0</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -50,12 +56,6 @@
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.jianggujin/IKAnalyzer-lucene -->
-        <dependency>
-            <groupId>com.jianggujin</groupId>
-            <artifactId>IKAnalyzer-lucene</artifactId>
-            <version>8.0.0</version>
         </dependency>
 
 

@@ -9,6 +9,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queries.function.FunctionScoreQuery;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -21,28 +22,27 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class LuceneTest {
+    private String indexPath = "D:\\LuceneIndex";
     /**
      * @Title: 写入数据
      * @methodName: testCreate
      * @Description:
-     * @author:
      */
     @Test
     public void testCreate() throws IOException {
 
         Article article = new Article();
-        article.setId(108L);
-        article.setAuthor("FLY");
-        article.setTitle("学习大数据");
-        article.setContent("学数据，像毕老师一样牛！");
-        article.setUrl("https://blog.csdn.net/fly910905/article/details/81190382");
+        article.setId(114L);
+        article.setAuthor("WD");
+        article.setTitle("梦幻诛仙这个游戏是很好玩的");
+        article.setContent("Lucene 是一个高效的，基于Java 的全文检索库");
+        article.setUrl("https://github.com/wendao76/TestLucene");
 
-        // String indexPath = "D:\\LuceneIndex";
-        String indexPath = "D:\\LuceneIndex";
         FSDirectory fsDirectory = FSDirectory.open(Paths.get(indexPath));
         //创建一个标准分词器，一个字分一次
 //        Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = new IKAnalyzer(true);
+
         //写入索引的配置，设置了分词器
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         //指定了写入数据目录和配置
@@ -60,25 +60,25 @@ public class LuceneTest {
      * @Title: 查询数据
      * @methodName: testSearch
      * @Description:
-     * @author: 王延飞
      * @date: 2018-08-05 16:01
      */
     @Test
     public void testSearch() throws IOException, ParseException {
 
 
-        String indexPath = "D:\\LuceneIndex";
         //Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = new IKAnalyzer(true);
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         //索引查询器
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
-        String queryStr = "数据";
+        String queryStr = "梦幻诛仙";
         //创建一个查询条件解析器
-        QueryParser parser = new QueryParser("content", analyzer);
+        QueryParser parser = new QueryParser("title", analyzer);
+
         //对查询条件进行解析
         Query query = parser.parse(queryStr);
+//        Query queryBoost = new BoostQuery(query, 10);
 
         //TermQuery将查询条件当成是一个固定的词
         //Query query = new TermQuery(new Term("url", "http://www.edu360.cn/a10010"));
@@ -104,14 +104,11 @@ public class LuceneTest {
      * @Title: 删除数据
      * @methodName: testDelete
      * @Description:
-     * @author: 王延飞
      * @date: 2018-08-05 16:01
      */
     @Test
     public void testDelete() throws IOException, ParseException {
 
-
-        String indexPath = "D:\\LuceneIndex";
         Analyzer analyzer = new IKAnalyzer(true);
         FSDirectory fsDirectory = FSDirectory.open(Paths.get(indexPath));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
@@ -140,13 +137,10 @@ public class LuceneTest {
      * @Title: 更新数据
      * @methodName: testUpdate
      * @Description: lucene的update比较特殊，update的代价太高，先删除，然后在插入
-     * @author: 王延飞
      */
     @Test
     public void testUpdate() throws IOException, ParseException {
 
-
-        String indexPath = "D:\\LuceneIndex";
         StandardAnalyzer analyzer = new StandardAnalyzer();
         FSDirectory fsDirectory = FSDirectory.open(Paths.get(indexPath));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
@@ -154,10 +148,10 @@ public class LuceneTest {
 
 
         Article article = new Article();
-        article.setId(106L);
+        article.setId(108L);
         article.setAuthor("老王");
-        article.setTitle("学好大数据，要找赵老师");
-        article.setContent("迎娶白富美，走上人生巅峰！！！");
+        article.setTitle("这是个什么情况");
+        article.setContent("反正这个文章没看过， 应该可以拿来用， 这些代码都是如此简单");
         article.setUrl("https://blog.csdn.net/fly910905/article/details/81190382");
         Document document = article.toDocument();
 
@@ -171,26 +165,52 @@ public class LuceneTest {
      * @Title: 查询多个字段
      * @methodName: testMultiField
      * @Description:
-     * @author: 王延飞
      */
     @Test
     public void testMultiField() throws IOException, ParseException {
-
-
-        String indexPath = "D:\\LuceneIndex";
         Analyzer analyzer = new IKAnalyzer(true);
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
         String[] fields = {"title", "content"};
-        //多字段的查询转换器
         MultiFieldQueryParser queryParser = new MultiFieldQueryParser(fields, analyzer);
-        Query query = queryParser.parse("老师");
+
+        TopDocs topDocs = indexSearcher.search(queryParser.parse("学习"), 10);
+        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+        for (ScoreDoc scoreDoc : scoreDocs) {
+            int doc = scoreDoc.doc;
+            System.out.println("score:" + scoreDoc.score);
+            Document document = indexSearcher.doc(doc);
+            Article article = Article.parseArticle(document);
+            System.out.println(article);
+        }
+
+        directoryReader.close();
+    }
+
+    /**
+     * @Title: 查询多个字段
+     * @methodName: testMultiField
+     * @Description:
+     */
+    @Test
+    public void testMultiFieldWeight() throws IOException, ParseException {
+        Analyzer analyzer = new IKAnalyzer(true);
+        DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
+        IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
+
+        String[] fields = {"title", "content"};
+        MultiFieldQueryParser queryParser = new MultiFieldQueryParser(fields, analyzer);
+        //多字段的查询转换器
+        QueryParser queryParser1 = new QueryParser("title", analyzer);
+        Query query1 = queryParser1.parse("学习");
+        FunctionScoreQuery query = FunctionScoreQuery.boostByQuery(queryParser.parse("学习"), query1, 5);
 
         TopDocs topDocs = indexSearcher.search(query, 10);
         ScoreDoc[] scoreDocs = topDocs.scoreDocs;
         for (ScoreDoc scoreDoc : scoreDocs) {
             int doc = scoreDoc.doc;
+            System.out.println("score:" + scoreDoc.score);
             Document document = indexSearcher.doc(doc);
             Article article = Article.parseArticle(document);
             System.out.println(article);
@@ -209,8 +229,6 @@ public class LuceneTest {
     @Test
     public void testMatchAll() throws IOException, ParseException {
 
-
-        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
@@ -232,12 +250,10 @@ public class LuceneTest {
      * @Title: 布尔查询，可以组合多个查询条件
      * @methodName: testBooleanQuery
      * @Description:
-     * @author: 王延飞
+     * @author: wendao76
      */
     @Test
     public void testBooleanQuery() throws Exception {
-
-        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
@@ -265,12 +281,10 @@ public class LuceneTest {
      * @Title: QueryParser查询解析
      * @methodName: testQueryParser
      * @Description:
-     * @author: 王延飞
+     * @author: wendao76
      */
     @Test
     public void testQueryParser() throws Exception {
-
-        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
@@ -298,11 +312,10 @@ public class LuceneTest {
      * @Title: 范围查询
      * @methodName: testRangeQuery
      * @Description:
-     * @author: 王延飞
+     * @author: wendao76
      */
     @Test
     public void testRangeQuery() throws Exception {
-        String indexPath = "D:\\LuceneIndex";
         DirectoryReader directoryReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
 
